@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manok Farm | Premium Chickens in the Philippines</title>
+<style>
+  :root {
+    --green-dark: #2d6a4f;
+    --green: #40916c;
+    --green-light: #52b788;
+    --cream: #f7f3e9;
+    --cream-dark: #e9e3cf;
+    --white: #ffffff;
+    --text: #1b263b;
+    --text-muted: #6c757d;
+    --border: #d1d9d6;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(45, 106, 79, 0.1);
+    --shadow-hover: 0 8px 24px rgba(45, 106, 79, 0.18);
+    --accent: #d9534f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, "Segoe UI", sans-serif;
+    background: var(--white);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* Header */
+  header {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo .icon {
+    width: 34px; height: 34px;
+    background: var(--green-light);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 1.4rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-style: italic;
+    margin-left: auto;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--green-dark), var(--green));
+    color: var(--white);
+    padding: 4rem 2rem;
+    text-align: center;
+    border-radius: 0 0 40px 40px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background: url("american.jpg") center/cover no-repeat;
+    opacity: 0.25; pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; margin-bottom: 0.75rem; }
+  .hero p { font-size: clamp(1rem, 2.5vw, 1.25rem); max-width: 700px; margin: 0 auto 1.5rem; opacity: 0.95; }
+
+  .hero .chip {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    padding: 0.5rem 1.25rem; border-radius: 999px;
+    font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Filters & Search */
+  .controls {
+    max-width: 1100px; margin: -2rem auto 2rem; padding: 0 1rem;
+    position: relative; z-index: 10;
+  }
+
+  .filter-bar {
+    background: var(--white);
+    padding: 1.5rem; border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+
+  .filter-row {
+    display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;
+  }
+
+  .search-wrap {
+    position: relative; flex: 1 1 260px; min-width: 200px;
+  }
+
+  .search-wrap input {
+    width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--cream); font-size: 0.95rem;
+    outline: none; transition: border 0.2s, box-shadow 0.2s;
+  }
+
+  .search-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(64,145,108,0.15); }
+
+  .search-wrap::before {
+    content: "\f002"; position: absolute; left: 0.9rem; top: 50%;
+    transform: translateY(-50%); font-family: "Segoe UI Emoji";
+    color: var(--text-muted); font-size: 1.1rem;
+  }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .filter-chip {
+    padding: 0.5rem 1rem; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--cream);
+    color: var(--text); font-size: 0.85rem; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+
+  .filter-chip.active {
+    background: var(--green); color: var(--white); border-color: var(--green);
+  }
+
+  .filter-chip:hover:not(.active) { background: var(--cream-dark); border-color: var(--green-light); }
+
+  .clear-filters {
+    margin-left: auto; font-size: 0.85rem; color: var(--green-dark);
+    text-decoration: underline; cursor: pointer; padding: 0.5rem 0;
+  }
+
+  .clear-filters:hover { color: var(--accent); }
+
+  /* Stats */
+  .stats {
+    max-width: 1100px; margin: 0 auto 2rem; padding: 0 1rem;
+    display: flex; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .stat {
+    flex: 1 1 180px; background: var(--cream); padding: 1.25rem 1rem;
+    border-radius: var(--radius); text-align: center; border: 1px solid var(--border);
+  }
+
+  .stat .num { display: block; font-size: 1.75rem; font-weight: 800; color: var(--green-dark); }
+  .stat .lbl { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Grid */
+  .gallery-title {
+    max-width: 1100px; margin: 0 auto 1.5rem; padding: 0 1rem;
+    font-size: 1.5rem; font-weight: 800; color: var(--green-dark);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .grid {
+    max-width: 1100px; margin: 0 auto 3rem; padding: 0 1rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow); display: flex; flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--green-light); }
+
+  .card-img {
+    height: 220px; width: 100%; overflow: hidden;
+    background: var(--cream-dark); position: relative;
+  }
+
+  .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+  .card:hover .card-img img { transform: scale(1.05); }
+
+  .card-badge {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    background: var(--green-dark); color: var(--white);
+    font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem;
+    border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+
+  .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .card-name { font-size: 1.15rem; font-weight: 700; color: var(--text); }
+  .card-breed { font-size: 0.85rem; color: var(--green-dark); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+  .card-age { font-size: 0.9rem; color: var(--text-muted); margin-bottom: auto; }
+  .card-price { font-size: 1.35rem; font-weight: 800; color: var(--green-dark); margin-top: auto; }
+  .card-desc { font-size: 0.85rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: auto; }
+
+  .availability {
+    font-size: 0.8rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px;
+    width: fit-content; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .availability.available { background: #dcfce7; color: #166534; }
+  .availability.sold { background: #fee2e2; color: #991b1b; }
+
+  .card-actions { padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+
+  .btn {
+    width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
+    border: none; background: var(--green); color: var(--white);
+    font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn:hover { background: var(--green-dark); }
+  .btn:active { transform: scale(0.98); }
+  .btn.secondary { background: var(--cream-dark); color: var(--text); border: 1px solid var(--border); }
+  .btn.secondary:hover { background: var(--cream); }
+
+  /* Modal */
+  .modal { display: none; position: fixed; inset: 0; z-index: 1000; }
+  .modal.open { display: flex; align-items: center; justify-content: center; }
+
+  .modal-backdrop {
+    position: absolute; inset: 0; background: rgba(27,38,59,0.55);
+    backdrop-filter: blur(6px);
+  }
+
+  .modal-content {
+    position: relative; background: var(--white); border-radius: var(--radius);
+    width: 92%; max-width: 700px; max-height: 90vh; overflow-y: auto;
+    margin: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    border: 1px solid var(--border); animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute; top: 0.85rem; right: 1rem;
+    background: none; border: none; font-size: 1.5rem; color: var(--text-muted);
+    cursor: pointer; line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  .modal-body { padding: 1.5rem; display: grid; gap: 1rem; }
+
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .modal-name { font-size: 1.75rem; font-weight: 800; color: var(--green-dark); }
+  .modal-breed { font-size: 1rem; color: var(--green-dark); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+  .modal-price { font-size: 1.5rem; font-weight: 800; color: var(--text); }
+  .modal-badge { font-size: 0.8rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.3px; width: fit-content; }
+  .modal-badge.available { background: #dcfce7; color: #166534; }
+  .modal-badge.sold { background: #fee2e2; color: #991b1b; }
+
+  .modal-img { width: 100%; height: 260px; border-radius: var(--radius); background: var(--cream-dark); overflow: hidden; border: 1px solid var(--border); }
+  .modal-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .detail-row { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; font-size: 0.95rem; color: var(--text-muted); }
+  .detail-row strong { color: var(--text); width: 95px; flex-shrink: 0; }
+
+  .desc-box { background: var(--cream); padding: 1rem; border-radius: 10px; border-left: 4px solid var(--green); font-size: 0.95rem; color: var(--text); }
+
+  .modal-actions { display: grid; grid-template-columns: 1fr; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+
+  /* Empty state */
+  .empty {
+    grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);
+  }
+  .empty p { font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+  /* Footer */
+  footer {
+    background: var(--green-dark); color: var(--white);
+    padding: 2.5rem 1rem; margin-top: 2rem;
+  }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; align-items: center; text-align: center; }
+  .footer-inner .logo { justify-content: center; color: var(--white); }
+  .footer-inner p { opacity: 0.85; font-size: 0.95rem; }
+  .footer-inner .note { font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem; }
+
+  /* Responsive */
+  @media (min-width: 640px) {
+    .filter-bar { flex-direction: row; align-items: center; }
+    .filter-row { flex: 1; }
+    .search-wrap { flex: 0 0 260px; }
+    .clear-filters { margin-left: 1rem; }
+    .modal-actions { grid-template-columns: 1fr auto; }
+  }
+
+  @media (max-width: 639px) {
+    header { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .tagline { margin-left: 0; font-size: 0.8rem; }
+    .hero { padding: 2.5rem 1rem; border-radius: 0 0 24px 24px; }
+    .hero h1 { font-size: 1.75rem; }
+    .modal-body { padding: 1.25rem; }
+    .modal-name { font-size: 1.4rem; }
+  }
+
+  @media (max-width: 480px) {
+    .card-img { height: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="icon">🐔</span> Manok Farm</div>
+  <div class="tagline">Premium chickens for every home</div>
+</header>
+
+<section class="hero">
+  <h1>Manok Farm</h1>
+  <p>Healthy, well-bred, and popular chicken varieties from our farm. Choose from our collection of chickens in different ages and breeds.</p>
+  <div class="chip">🇵🇭 Prices in Philippine Peso (₱)</div>
+</section>
+
+<div class="controls">
+  <div class="filter-bar">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Maghap sa pangalan, uri, o edad..." autocomplete="off">
+      </div>
+      <div class="chip-group" id="chipGroup"></div>
+      <div class="clear-filters" id="clearFilters" style="display:none;">Clear filters</div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="num" id="statTotal">0</span><span class="lbl">Mga Manok</span></div>
+  <div class="stat"><span class="num" id="statAvailable">0</span><span class="lbl">Available Chickens</span></div>
+  <div class="stat"><span class="num" id="statPrice">₱0</span><span class="lbl">Starting from</span></div>
+</div>
+
+<h2 class="gallery-title">🐔 Chickens at the Farm</h2>
+
+<div class="grid" id="grid">
+  <div class="empty" id="empty" style="display:none;">
+    <p>No chickens found</p>
+    <p style="font-size:0.9rem;">Try changing the filter or search again.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="logo"><span class="icon">🐔</span> Manok Farm</div>
+    <p>Manok Farm — Fresh chickens, fresh from the farm.</p>
+    <p class="note">Viewing only. No online payment or shopping cart.</p>
+  </div>
+</footer>
+
+<!-- Modal / Details -->
+<div class="modal" id="modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()" aria-label="Isara">&times;</button>
+    <div class="modal-body">
+      <div class="modal-header">
+        <div>
+          <div class="modal-name" id="mName"></div>
+          <div class="modal-breed" id="mBreed"></div>
+        </div>
+        <div class="modal-badge" id="mBadge"></div>
+      </div>
+      <div class="modal-img"><img id="mImg" src="" alt=""></div>
+      <div class="modal-price" id="mPrice">₱0</div>
+      <div class="detail-row">
+        <div><strong>Age:</strong> <span id="mAge"></span></div>
+        <div><strong>Stock:</strong> <span id="mStock"></span></div>
+      </div>
+      <div class="desc-box" id="mDesc"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="closeModal()">Back to List</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Sample chicken data
+const chickens = [
+  {
+    id: 1,
+    name: "Bluey",
+    breed: "Ameraucana",
+    age: "4 months",
+    ageMonths: 4,
+    price: 450,
+    priceText: "₱450",
+    image: "american.jpg",
+    description: "Matibay na Ameraucana na kilala sa kulay berdeng itlog at mabuting temperamento. Sikat sa mga backyard farmer sa Pilipinas.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 2,
+    name: "Lakan",
+    breed: "Ancona",
+    age: "4 months",
+    ageMonths: 4,
+    price: 400,
+    priceText: "₱400",
+    image: "ancona.webp",
+    description: "Matalinong Ancona mula sa Italya. Mahusay na nagbibigay itlog at madaling alagaan pa sa maikling espasyo.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 3,
+    name: "Bantay",
+    breed: "Australorp",
+    age: "4 months",
+    ageMonths: 4,
+    price: 480,
+    priceText: "₱480",
+    image: "australorp.jpg",
+    description: "Australorp na may makapal na buhok at sikat sa mabigat na produksyon ng itlog, kahit sa tag-ulan.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 4,
+    name: "Haya",
+    breed: "Araucana",
+    age: "5 months",
+    ageMonths: 5,
+    price: 550,
+    priceText: "₱550",
+    image: "Araucana.webp",
+    description: "Rare na Araucana na nagbibigay ng natirasyang itlog. Malusog at handa nang maging bahay ng tuwing umaga.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 5,
+    name: "Diwa",
+    breed: "Faverolles",
+    age: "5 months",
+    ageMonths: 5,
+    price: 600,
+    priceText: "₱600",
+    image: "faverolles.webp",
+    description: "Magalang na Faverolles mula sa Pransya. Mainit ang ulo (bearded) at sikat sa pamilyang nag-aalaga ng manok.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 6,
+    name: "Lakambini",
+    breed: "Polish",
+    age: "5 months",
+    ageMonths: 5,
+    price: 500,
+    priceText: "₱500",
+    image: "Polish.jpg",
+    description: "Polish chicken na may kikitang buhok sa ulo. Malungkot ang tingin pero masayang alagaan sa farm.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 7,
+    name: "Makiling",
+    breed: "Brahma",
+    age: "7 months",
+    ageMonths: 7,
+    price: 900,
+    priceText: "₱900",
+    image: "Brahmahahn.png",
+    description: "Malaking Brahma na mababa ang tunog at mabait. Perfect para sa breeding at exhibit sa farm.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 8,
+    name: "Tagum",
+    breed: "Dong Tao",
+    age: "8 months",
+    ageMonths: 8,
+    price: 1500,
+    priceText: "₱1,500",
+    image: "DongTao.webp",
+    description: "Eksklusibong Dong Tao mula sa Vietnam na kilala sa malalaking paa. Mahalagang uri para sa kolektor at breeder.",
+    stock: "Sold out",
+    status: "sold"
+  },
+  {
+    id: 9,
+    name: "Maganda",
+    breed: "Jersey Giant",
+    age: "9 months",
+    ageMonths: 9,
+    price: 1200,
+    priceText: "₱1,200",
+    image: "jersey.jpg",
+    description: "Isa sa pinakamalaking uri ng manok sa mundo. Malambot ang laman at mainit na ugali, sikat sa commercial farm.",
+    stock: "Available",
+    status: "available"
+  },
+  {
+    id: 10,
+    name: "Alamat",
+    breed: "Yokohama",
+    age: "6 months",
+    ageMonths: 6,
+    price: 800,
+    priceText: "₱800",
+    image: "yokohama.jpg",
+    description: "Yokohama na may mahabang buntot at mahusay na anyong pisikal. Para sa mga nag-aalaga ng manok para sa pamamaraan.",
+    stock: "Available",
+    status: "available"
+  }
+];
+
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const searchInput = document.getElementById("searchInput");
+const chipGroup = document.getElementById("chipGroup");
+const clearFilters = document.getElementById("clearFilters");
+
+// Stats
+const statTotal = document.getElementById("statTotal");
+const statAvailable = document.getElementById("statAvailable");
+const statPrice = document.getElementById("statPrice");
+
+let activeFilter = "all"; // all | 4 | 5 | 6plus
+
+const ageLabels = {
+  all: "All Ages",
+  "4": "4 months",
+  "5": "5 months",
+  "6plus": "6 months & older"
+};
+
+function renderStats(list) {
+  const total = list.length;
+  const available = list.filter(c => c.status === "available").length;
+  const minPrice = list.length ? Math.min(...list.map(c => c.price)) : 0;
+  statTotal.textContent = total;
+  statAvailable.textContent = available;
+  statPrice.textContent = minPrice ? `₱${minPrice.toLocaleString()}` : "₱0";
+}
+
+function buildChips() {
+  chipGroup.innerHTML = "";
+  const filters = [
+    { key: "all", label: ageLabels.all },
+    { key: "4", label: "4 months" },
+    { key: "5", label: "5 months" },
+    { key: "6plus", label: "6 months & older" }
+  ];
+  filters.forEach(f => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = `filter-chip ${activeFilter === f.key ? "active" : ""}`;
+    chip.textContent = f.label;
+    chip.onclick = () => {
+      activeFilter = f.key;
+      render();
+    };
+    chipGroup.appendChild(chip);
+  });
+}
+
+function filterChickens() {
+  const q = searchInput.value.toLowerCase().trim();
+  return chickens.filter(c => {
+    const matchAge = activeFilter === "all"
+      ? true
+      : activeFilter === "4"
+        ? c.ageMonths === 4
+        : activeFilter === "5"
+          ? c.ageMonths === 5
+          : c.ageMonths >= 6;
+    const matchSearch = q === ""
+      ? true
+      : c.name.toLowerCase().includes(q)
+        || c.breed.toLowerCase().includes(q)
+        || c.age.toLowerCase().includes(q);
+    return matchAge && matchSearch;
+  });
+}
+
+function render() {
+  buildChips();
+  clearFilters.style.display = (activeFilter !== "all" || searchInput.value.trim() !== "") ? "block" : "none";
+
+  const list = filterChickens();
+  grid.innerHTML = "";
+
+  if (list.length === 0) {
+    empty.style.display = "block";
+    renderStats(list);
+    return;
+  }
+  empty.style.display = "none";
+
+  list.forEach(c => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-img">
+        <img src="${c.image}" alt="${c.name} ${c.breed}" loading="lazy" onerror="this.src='morechicken.png'">
+        <span class="card-badge">${c.age}</span>
+        ${c.status === "sold" ? `<span class="card-badge" style="background:#991b1b;">Sold out</span>` : ""}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${c.name}</div>
+        <div class="card-breed">${c.breed}</div>
+        <div class="card-age">${c.age} months old</div>
+        <div class="card-desc">${c.description}</div>
+        <div class="card-price">${c.priceText}</div>
+        <span class="availability ${c.status}">${c.status === "available" ? "Available" : "Sold out"}</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn" onclick="openModal(${c.id})">View Details</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  renderStats(list);
+}
+
+clearFilters.onclick = () => {
+  activeFilter = "all";
+  searchInput.value = "";
+  render();
+};
+
+searchInput.addEventListener("input", render);
+
+// Modal
+const modal = document.getElementById("modal");
+
+function openModal(id) {
+  const c = chickens.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById("mName").textContent = c.name;
+  document.getElementById("mBreed").textContent = c.breed;
+  document.getElementById("mBadge").textContent = c.status === "available" ? "Available" : "Sold out";
+  document.getElementById("mBadge").className = `modal-badge ${c.status}`;
+  document.getElementById("mImg").src = c.image;
+  document.getElementById("mImg").alt = `${c.name} ${c.breed}`;
+  document.getElementById("mPrice").textContent = c.priceText;
+  document.getElementById("mAge").textContent = c.age;
+  document.getElementById("mStock").textContent = c.stock;
+  document.getElementById("mDesc").textContent = c.description;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+});
+
+// Initial render
+render();
+</script>
+
+</body>
+</html>
